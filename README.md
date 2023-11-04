@@ -2,7 +2,7 @@
 
 In this assignment, you will create a system consisting of three microservices: the Auth service, the Resource service, and the Image service. The Auth service will handle user authentication and provide JWTs to be used as bearer tokens for accessing the Resource service. The Resource service will handle images (called "resources") in a restful manner, storing image metadata and requesting the Image service to store the actual images. The Image service is already deployed and responsible for storing all images used by the application.
 
-The system will have a single entry point from the consumer's perspective, but will consist of multiple back-end services. You can use Postman or Curl to test the endpoints. No client application needs to be developed.
+The system will have a single entry point from the consumer's perspective but will consist of multiple back-end services. You can use Postman or Curl to test the endpoints. No client application needs to be developed.
 
 Here is an overview of the system architecture:
 
@@ -10,7 +10,7 @@ Here is an overview of the system architecture:
 
 _The image service is already deployed._
 
-And here is a flowchart illustrating the process for handling image requests:
+Here is a flowchart illustrating the process for handling image requests:
 
 ![Flow chart of the application](.readme/flow_chart.png)
 
@@ -34,7 +34,7 @@ For more information about the Resource service, see [Resource Service](../../..
 
 ## Image service (existing)
 
-The Image service is already deployed and responsible for storing all images used by the application. It can be accessed at https://courselab.lnu.se/picture-it/images/api/v1/. Its documentation, available at https://courselab.lnu.se/picture-it/images/api/v1/docs/, provides more information about how to communicate with the service. Some important points to note:
+The Image service is already deployed and responsible for storing all images used by the application. It can be accessed at <https://courselab.lnu.se/picture-it/images/api/v1/>. Its documentation, available at <https://courselab.lnu.se/picture-it/images/api/v1/docs/>, provides more information about how to communicate with the service. Some important points to note:
 
 - Image data must be sent as a Base64 encoded string.
 - The service communicates using an Access token, which you can find in your "Secrets" project.
@@ -51,4 +51,4 @@ No code needs to be written to this repository, but you can use it to save test 
 
 Make sure to read [all requirements of the application](../../issues/), including issues #1, #2, #3, #4, #5, #6, #7, #8, #9, #10, and #11. Pay extra attention to the labels indicating whether a requirement is required (~"req::required") or optional (~"req::optional").
 
-You are required to close any issues and tasks ([ ]) that you implement. If you add any functionality, you must also create and close your own issues.
+You are required to close any issues and tasks ([ ]) that you implement. If you add any functionality, you must also create and close these issues.
