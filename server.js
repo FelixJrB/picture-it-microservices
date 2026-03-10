@@ -1,6 +1,6 @@
 import express from 'express';
-import { connectToMongoDB } from './config/mongoose.js';
-import { router } from './routes/router.js';
+import { connectToMongoDB } from './src/config/mongoose.js';
+import { router } from './src/routes/router.js';
 
 
 await connectToMongoDB('mongodb://localhost:27017/blog');
