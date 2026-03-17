@@ -1,8 +1,8 @@
 /**
- * @file Defines the post model for the application.
- * @module postModel
+ * @file Defines the resource model for the application.
+ * @module resourceModel
  * @author Felix Berglund
- * @description This file defines the post model for the application,
+ * @description This file defines the resource model for the application,
  * including schema definition and relationships.
  */
 
