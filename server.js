@@ -1,6 +1,6 @@
 import express from 'express';
 import { connectToMongoDB } from './src/config/mongoose.js';
-import { router } from './src/routes/resourceRoutes.js';
+import { router } from './src/routes/api/v1/resourceRoutes.js';
 
 
 await connectToMongoDB('mongodb://localhost:27017/resource-service');

@@ -1,4 +1,4 @@
-import { Resource } from '../models/Resource.js';
+import { Resource } from '../../models/Resource.js';
 
 /**
  * Controller for handling CRUD operations on resources.
