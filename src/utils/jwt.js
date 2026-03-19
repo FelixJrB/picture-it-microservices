@@ -1,16 +1,16 @@
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const currentFile = fileURLToPath(import.meta.url);
-const currentDir = path.dirname(currentFile);
+const currentFile = fileURLToPath(import.meta.url)
+const currentDir = path.dirname(currentFile)
 
 export const PRIVATE_KEY = fs.readFileSync(
-  path.join(currentDir, "../../keys/private.pem"),
-  "utf-8",
+  path.join(currentDir, '../../keys/private.pem'),
+  'utf-8',
 );
 
 export const PUBLIC_KEY = fs.readFileSync(
-  path.join(currentDir, "../../keys/public.pem"),
-  "utf-8",
+  path.join(currentDir, '../../keys/public.pem'),
+  'utf-8',
 );
