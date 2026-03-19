@@ -62,7 +62,8 @@ export class authController {
                 PRIVATE_KEY,
                 {
                     algorithm: 'RS256',
-                    expiresIn: '1h'
+                    expiresIn: '1h',
+                    issuer: 'Felix Berglund'
                 })
 
             res.json({ 'access-token': token })
