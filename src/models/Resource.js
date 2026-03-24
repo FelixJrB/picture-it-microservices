@@ -12,7 +12,10 @@ import { Schema } from './baseSchema.js'
 const schema = new mongoose.Schema({
     imageUrl: {
       type: String,
-      required: true
+  },
+  contentType: {
+    type: String,
+    required: true
   },
   location: {
     type: String,
