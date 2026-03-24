@@ -10,19 +10,22 @@ import mongoose from 'mongoose'
 import { Schema } from './baseSchema.js'
 
 const schema = new mongoose.Schema({
-  title: {
+    imageUrl: {
+      type: String,
+      required: true
+  },
+  location: {
     type: String,
-    required: true,
     trim: true,
     minlength: 1
   },
   description: {
     type: String,
-    required: true,
+
     trim: true,
     minlength: 1
   },
-  imageUrl: {
+  userId: {
     type: String,
     required: true
   }
