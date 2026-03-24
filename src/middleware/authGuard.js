@@ -10,17 +10,17 @@ export async function authenticateJWT(req, res, next) {
 
 
 
-        if (!authorization?.startsWith("Bearer ")) {
+        if (!authorization?.startsWith('Bearer ')) {
 
-            return res.status(401).json({ error: "Missing bearer token." })
+            return res.status(401).json({ error: 'Missing bearer token.' })
 
         }
 
-        const token = authorization.split(" ")[1];
+        const token = authorization.split(' ')[1]
 
         const payload = jwt.verify(token, PUBLIC_KEY, {
 
-            algorithm: ["RS256"],
+            algorithm: ['RS256'],
             issuer: 'Felix Berglund'
 
         })
@@ -28,10 +28,8 @@ export async function authenticateJWT(req, res, next) {
         next()
 
     } catch (error) {
-
         console.log(error)
-
-        return res.status(401).json({ error: "Invalid or expired token." })
+        return res.status(401).json({ error: 'Invalid or expired token.' })
 
     }
 
