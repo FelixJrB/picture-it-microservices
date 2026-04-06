@@ -9,19 +9,20 @@ import { Resource } from '../../models/Resource.js'
  * - create: Create a new resource
  * - update: Update an existing resource
  * - delete: Delete a resource
- * 
+ *
  * Each method uses async/await for asynchronous operations and includes error handling to ensure proper responses are sent to the client.
  */
 export class resourceController {
   /**
    * Loads a resource by ID and attaches it to the request object.
    *
-   * @param {*} req The request object
-   * @param {*} res The response object
-   * @param {*} next The next middleware function
-   * @param {*} id The ID of the resource to load
+   * @param {object} req - The request object.
+   * @param {object} _res - The response object.
+   * @param {Function} next - The next middleware function.
+   * @param {string} id - The ID of the resource to load.
+   * @returns {Promise<void>} Resolves when the resource is loaded or an error is passed.
    */
-  async loadResource(req, res, next, id) {
+  async loadResource(req, _res, next, id) {
     try {
       const resource = await Resource.findById(id)
       if (!resource) {
@@ -31,34 +32,36 @@ export class resourceController {
       }
 
       req.resource = resource
-      next()
+      return next()
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
   /**
    * Find all resources.
    *
-   * @param {*} req The request object
-   * @param {*} res The response object
-   * @param {*} next The next middleware function
+   * @param {object} req - The request object.
+   * @param {object} res - The response object.
+   * @param {Function} next - The next middleware function.
+   * @returns {Promise<void>} Resolves with a list of all resources for the authenticated user.
    */
   async findAll(req, res, next) {
     try {
       const resources = await Resource.find({ userId: req.user.sub }).sort({ createdAt: -1 })
-      res.json(resources)
+      return res.json(resources)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
   /**
    * Find a specific resource by ID.
    *
-   * @param {*} req The request object, which should have the resource loaded in req.resource
-   * @param {*} res The response object, used to send the appropriate status code and response
-   * @param {*} next The next middleware function, used for error handling
+   * @param {object} req - The request object, which should have the resource loaded in req.resource.
+   * @param {object} res - The response object, used to send the appropriate status code and response.
+   * @param {Function} next - The next middleware function, used for error handling.
+   * @returns {Promise<void>} Resolves with the resource if found and authorized, or passes an error.
    */
   async find(req, res, next) {
     try {
@@ -67,21 +70,21 @@ export class resourceController {
         error.status = 403
         return next(error)
       }
-      res.json(req.resource)
+      return res.json(req.resource)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
   /**
-   * Create a new resource. 
+   * Create a new resource.
    * Expects data and contentType in the request body, and optionally description and location.
    * Validates the input, sends the data to an image service to get an image URL, and saves the resource to the database.
-   * 
-   * @param {*} req The request object, which should have the user ID in req.user.sub and the resource data in req.body.
-   * @param {*} res The repsone object, used to send the appropriate status code and response.
-   * @param {*} next The next middleware function, used for error handling.
-   * @returns 
+   *
+   * @param {object} req - The request object, which should have the user ID in req.user.sub and the resource data in req.body.
+   * @param {object} res - The response object, used to send the appropriate status code and response.
+   * @param {Function} next - The next middleware function, used for error handling.
+   * @returns {Promise<void>} Resolves with the created resource, or passes an error if the input is invalid or the image service fails.
    */
   async create(req, res, next) {
     try {
@@ -116,9 +119,9 @@ export class resourceController {
         location,
         userId: req.user.sub,
       })
-      res.status(201).json(resource)
+      return res.status(201).json(resource)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -127,13 +130,13 @@ export class resourceController {
    * Expects data and contentType in the request body, and optionally description and location.
    * Validates the input, sends the updated data to an image service to update the image, and saves the updated resource to the database.
    * Responds with 204 No Content if the update is successful, or 403 Forbidden if the user does not own the resource.
-   * 
-   * @param {*} req The request object, which should have the resource loaded in req.resource and the updated fields in req.body
-   * @param {*} res The response object, used to send the appropriate status code and response
-   * @param {*} next The next middleware function, used for error handling
+   *
+   * @param {object} req - The request object, which should have the resource loaded in req.resource and the updated fields in req.body.
+   * @param {object} res - The response object, used to send the appropriate status code and response.
+   * @param {Function} next - The next middleware function, used for error handling.
+   * @returns {Promise<void>} Resolves with 204 No Content if the update is successful, or passes an error.
    */
   async update(req, res, next) {
-
     try {
       if (req.resource.userId !== req.user.sub) {
         const error = new Error('Forbidden')
@@ -151,8 +154,8 @@ export class resourceController {
       // Extract the image ID from the existing image URL
       const imageId = req.resource.imageUrl.split('/').pop()
 
-      // Send to image service, 
-      // expecting 204 No Content if the update is successful, 
+      // Send to image service,
+      // expecting 204 No Content if the update is successful,
       // as no body is returned, only the status code
       await fetch(`${process.env.PERSONAL_ACCESS_TOKEN_URL}/${imageId}`, {
         method: 'PUT',
@@ -169,25 +172,23 @@ export class resourceController {
       req.resource.location = location
       await req.resource.save()
 
-
-      res.status(204).send()
+      return res.status(204).send()
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
-
 
   /**
    * Partially update an existing resource. Patch - (/api/v1/images/:id)
    * We update only the fields that are provided in the request body, and leave the rest unchanged.
    * Responds with 204 No Content if the update is successful, or 403 Forbidden if the user does not own the resource.
-   * 
-   * @param {*} req The request object, which should have the resource loaded in req.resource and the updated fields in req.body
-   * @param {*} res The response object, used to send the appropriate status code and response
-   * @param {*} next The next middleware function, used for error handling
+   *
+   * @param {object} req - The request object, which should have the resource loaded in req.resource and the updated fields in req.body.
+   * @param {object} res - The response object, used to send the appropriate status code and response.
+   * @param {Function} next - The next middleware function, used for error handling.
+   * @returns {Promise<void>} Resolves with 204 No Content if the update is successful, or passes an error.
    */
   async partialUpdate(req, res, next) {
-
     try {
       if (req.resource.userId !== req.user.sub) {
         const error = new Error('Forbidden')
@@ -200,20 +201,21 @@ export class resourceController {
       if ('location' in req.body) req.resource.location = req.body.location
       await req.resource.save()
 
-      res.status(204).send()
+      return res.status(204).send()
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
   /**
-   * Delete a resource. 
-   * Responds with 204 No Content if deletion is successful, 
+   * Delete a resource.
+   * Responds with 204 No Content if deletion is successful,
    * or 403 if not authorized.
    *
-   * @param {*} req The request object, which should have the resource loaded in req.resource
-   * @param {*} res The response object, used to send the appropriate status code and response
-   * @param {*} next The next middleware function, used for error handling
+   * @param {object} req - The request object, which should have the resource loaded in req.resource.
+   * @param {object} res - The response object, used to send the appropriate status code and response.
+   * @param {Function} next - The next middleware function, used for error handling.
+   * @returns {Promise<void>} Resolves with 204 No Content if deletion is successful, or passes an error.
    */
   async delete(req, res, next) {
     try {
@@ -226,8 +228,8 @@ export class resourceController {
       // Extract the image ID from the existing image URL
       const imageId = req.resource.imageUrl.split('/').pop()
 
-      // Send to image service, 
-      // expecting 204 No Content if the deletion is successful, 
+      // Send to image service,
+      // expecting 204 No Content if the deletion is successful,
       // as no body is returned, only the status code
       await fetch(`${process.env.PERSONAL_ACCESS_TOKEN_URL}/${imageId}`, {
         method: 'DELETE',
@@ -238,9 +240,9 @@ export class resourceController {
       })
 
       await req.resource.deleteOne()
-      res.status(204).send()
+      return res.status(204).send()
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 }
