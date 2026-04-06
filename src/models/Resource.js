@@ -10,28 +10,28 @@ import mongoose from 'mongoose'
 import { Schema } from './baseSchema.js'
 
 const schema = new mongoose.Schema({
-    imageUrl: {
-      type: String,
+  imageUrl: {
+    type: String,
   },
   contentType: {
     type: String,
-    required: true
+    required: true,
   },
   location: {
     type: String,
     trim: true,
-    minlength: 1
+    minlength: 1,
   },
   description: {
     type: String,
 
     trim: true,
-    minlength: 1
+    minlength: 1,
   },
   userId: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
 
 // Add base schema fields to this schema,inherited from baseSchema.js
