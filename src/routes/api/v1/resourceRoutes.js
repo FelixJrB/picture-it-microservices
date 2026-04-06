@@ -8,7 +8,7 @@ export const router = express.Router()
 const controller = new resourceController()
 
 router.param('id', (req, res, next, id) =>
-    controller.loadResource(req, res, next, id))
+  controller.loadResource(req, res, next, id))
 
 // Apply the JWT authentication middleware to all routes in this router
 router.use(authenticateJWT)
