@@ -7,6 +7,6 @@ const currentDir = path.dirname(currentFile)
 
 export const PRIVATE_KEY = fs.readFileSync(
   path.join(currentDir, '../keys/private.pem'),
-  'utf-8',
+  'utf8'
 )
 

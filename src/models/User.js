@@ -15,39 +15,47 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
-      minlength: 1
+      minlength: 1,
     },
     passwordHash: {
       type: String,
-      required: true
+      required: true,
     },
     firstName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     lastName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     email: {
       type: String,
       required: true,
       unique: true,
-      trim: true
-    }
+      trim: true,
+    },
   },
   {
     timestamps: true,
     toJSON: {
-      transform(doc, ret) {
+      /**
+       * Custom transformation function to modify the output when converting a user document to JSON.
+       * This function adds an 'id' field with the string representation of the '_id' field,
+       * and removes the '_id', '__v', and 'passwordHash' fields from the output.
+       *
+       * @param {object} _doc - The Mongoose document being converted to JSON.
+       * @param {object} ret - The plain JavaScript object representation of the document that will be returned as JSON.
+       */
+      transform(_doc, ret) {
         ret.id = ret._id.toString()
         delete ret._id
         delete ret.__v
         delete ret.passwordHash
-      }
-    }
+      },
+    },
   }
 )
 
@@ -57,6 +65,7 @@ const userSchema = new mongoose.Schema(
  * The hook checks if the passwordHash field has been modified, and if so,
  * it hashes the new password using bcrypt with a salt rounds of 10.
  * This process is asynchronous to avoid blocking the event loop.
+ *
  * @returns {Promise<void>} A promise that resolves when the hashing is complete.
  */
 userSchema.pre('save', async function () {
@@ -67,15 +76,16 @@ userSchema.pre('save', async function () {
 
 /**
  * Authenticates a user by their username and password.
+ *
  * @param {string} username  The username of the user to authenticate
  * @param {string} password  The plaintext password to compare against the stored password hash
- * @returns {Promise<Object|null>} A promise that resolves to the authenticated user object if the credentials are valid, or null if they are not
+ * @returns {Promise<object | boolean>} A promise that resolves to the authenticated user object if the credentials are valid, or false if they are not.
  */
 userSchema.statics.authenticate = async function (username, password) {
   const user = await this.findOne({ username })
-  if (!user) return null
-  if (await bcrypt.compare(password, user.passwordHash)) return user
-  return null
+  if (!user) return false
+  const isMatch = await bcrypt.compare(password, user.passwordHash)
+  return isMatch ? user : false
 }
 
 export const UserModel = mongoose.model('User', userSchema)

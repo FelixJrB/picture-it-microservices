@@ -1,5 +1,5 @@
-import express from 'express';
-import { authController } from '../../../controllers/api/authController.js';
+import express from 'express'
+import { authController } from '../../../controllers/api/authController.js'
 
 export const router = express.Router()
 
