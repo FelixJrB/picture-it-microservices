@@ -18,7 +18,7 @@ export class resourceController {
    *
    * @param {object} req - The request object.
    * @param {object} _res - The response object.
-   * @param {Function} next - The next middleware function.
+   * @param {import('express').NextFunction} next - The next middleware function.
    * @param {string} id - The ID of the resource to load.
    * @returns {Promise<void>} Resolves when the resource is loaded or an error is passed.
    */
@@ -43,7 +43,7 @@ export class resourceController {
    *
    * @param {object} req - The request object.
    * @param {object} res - The response object.
-   * @param {Function} next - The next middleware function.
+   * @param {import('express').NextFunction} next - The next middleware function.
    * @returns {Promise<void>} Resolves with a list of all resources for the authenticated user.
    */
   async findAll(req, res, next) {
@@ -60,7 +60,7 @@ export class resourceController {
    *
    * @param {object} req - The request object, which should have the resource loaded in req.resource.
    * @param {object} res - The response object, used to send the appropriate status code and response.
-   * @param {Function} next - The next middleware function, used for error handling.
+   * @param {import('express').NextFunction} next - The next middleware function, used for error handling.
    * @returns {Promise<void>} Resolves with the resource if found and authorized, or passes an error.
    */
   async find(req, res, next) {
@@ -83,7 +83,7 @@ export class resourceController {
    *
    * @param {object} req - The request object, which should have the user ID in req.user.sub and the resource data in req.body.
    * @param {object} res - The response object, used to send the appropriate status code and response.
-   * @param {Function} next - The next middleware function, used for error handling.
+   * @param {import('express').NextFunction} next - The next middleware function, used for error handling.
    * @returns {Promise<void>} Resolves with the created resource, or passes an error if the input is invalid or the image service fails.
    */
   async create(req, res, next) {
@@ -133,7 +133,7 @@ export class resourceController {
    *
    * @param {object} req - The request object, which should have the resource loaded in req.resource and the updated fields in req.body.
    * @param {object} res - The response object, used to send the appropriate status code and response.
-   * @param {Function} next - The next middleware function, used for error handling.
+   * @param {import('express').NextFunction} next - The next middleware function, used for error handling.
    * @returns {Promise<void>} Resolves with 204 No Content if the update is successful, or passes an error.
    */
   async update(req, res, next) {
@@ -185,7 +185,7 @@ export class resourceController {
    *
    * @param {object} req - The request object, which should have the resource loaded in req.resource and the updated fields in req.body.
    * @param {object} res - The response object, used to send the appropriate status code and response.
-   * @param {Function} next - The next middleware function, used for error handling.
+   * @param {import('express').NextFunction} next - The next middleware function, used for error handling.
    * @returns {Promise<void>} Resolves with 204 No Content if the update is successful, or passes an error.
    */
   async partialUpdate(req, res, next) {
@@ -214,7 +214,7 @@ export class resourceController {
    *
    * @param {object} req - The request object, which should have the resource loaded in req.resource.
    * @param {object} res - The response object, used to send the appropriate status code and response.
-   * @param {Function} next - The next middleware function, used for error handling.
+   * @param {import('express').NextFunction} next - The next middleware function, used for error handling.
    * @returns {Promise<void>} Resolves with 204 No Content if deletion is successful, or passes an error.
    */
   async delete(req, res, next) {
