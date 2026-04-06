@@ -23,7 +23,7 @@ const convertOptions = Object.freeze({
   transform: (doc, ret) => {
     delete ret._id // Exclude the _id property
     return ret
-  }
+  },
 })
 
 // Create a base schema
@@ -39,7 +39,7 @@ const baseSchema = new mongoose.Schema(
     // Enable optimistic concurrency control. This is a strategy to ensure the
     // document you're updating didn't change between when you loaded it, and
     // when you update it.
-    optimisticConcurrency: false
+    optimisticConcurrency: false,
   }
 )
 // Export the base schema, frozen to prevent modifications
