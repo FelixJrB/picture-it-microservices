@@ -11,13 +11,13 @@ const PORT = 3000
 app.use(express.json({ limit: '500kb'}))
 app.use('/api/v1/images', router)
 
-app.use((err, req, res, next) => {
+app.use((err, _req, res, _next) => {
   res.status(err.status || 500).json({
     status_code: err.status || 500,
-    message: err.message || 'An unexpected condition was encountered.'
+    message: err.message || 'An unexpected condition was encountered.',
   })
 })
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on port ${PORT}`)
+  console.log(`Server is running on port ${PORT}`)
 })
