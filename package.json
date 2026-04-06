@@ -6,10 +6,12 @@
   "author": "Felix Berglund",
   "type": "module",
   "main": "server.js",
-   "scripts": {
+  "scripts": {
     "start": "node server.js",
     "dev": "nodemon --inspect --env-file=.env server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
+
   },
   "dependencies": {
     "express": "^5.2.1",
@@ -17,6 +19,17 @@
     "mongoose": "^9.2.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@lnu/eslint-config": "^2.0.5",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^10.2.0",
+    "eslint-plugin-jsdoc": "^62.9.0",
+    "eslint-plugin-n": "^17.24.0",
+    "eslint-plugin-regexp": "^3.1.0",
+    "eslint-plugin-security": "^4.0.0",
+    "eslint-plugin-sort-destructure-keys": "^3.0.0",
+    "eslint-plugin-unicorn": "^64.0.0",
+    "globals": "^17.4.0",
     "nodemon": "^3.1.14"
   }
 }
