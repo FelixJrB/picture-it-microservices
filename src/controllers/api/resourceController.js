@@ -100,6 +100,11 @@ export class resourceController {
             })
             const imageData = await response.json()
 
+            if (!response.ok) {
+            const error = new Error('Image service error')
+            error.status = 502
+            throw error
+            }
             // Save the resource to the database with the returned image URL
             const resource = await Resource.create({
                 imageUrl: imageData.imageUrl,
@@ -146,7 +151,7 @@ export class resourceController {
             // Send to image service, 
             // expecting 204 No Content if the update is successful, 
             // as no body is returned, only the status code
-            const response = await fetch(`${process.env.PERSONAL_ACCESS_TOKEN_URL}/${imageId}`, {
+            await fetch(`${process.env.PERSONAL_ACCESS_TOKEN_URL}/${imageId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -220,7 +225,7 @@ export class resourceController {
             // Send to image service, 
             // expecting 204 No Content if the deletion is successful, 
             // as no body is returned, only the status code
-            const response = await fetch(`${process.env.PERSONAL_ACCESS_TOKEN_URL}/${imageId}`, {
+            await fetch(`${process.env.PERSONAL_ACCESS_TOKEN_URL}/${imageId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
