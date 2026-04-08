@@ -3,7 +3,7 @@ import { connectToMongoDB } from './src/config/mongoose.js'
 import { router } from './src/routes/router.js'
 
 
-await connectToMongoDB('mongodb://localhost:27018/auth-service')
+await connectToMongoDB(process.env.DATABASE_URL || 'mongodb://localhost:27018/auth-service')
 
 const app = express()
 const PORT = 3001
