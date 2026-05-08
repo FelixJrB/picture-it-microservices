@@ -7,6 +7,10 @@ import bcrypt from 'bcrypt'
  * @author Felix Berglund
  * @description This file defines the user model for the application,
  * including schema definition, password hashing, and authentication methods.
+ * It uses Mongoose for MongoDB interactions and bcrypt for secure password hashing.
+ * The user model includes fields for username, password hash, first name, last name, email, and refresh token.
+ * It also includes a pre-save hook to hash the password before saving and a static method for authenticating users.
+ * Gets stored in the database with a hashed password, and provides a method to authenticate users by comparing the provided password with the stored hash.
  */
 const userSchema = new mongoose.Schema(
   {
@@ -36,6 +40,9 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+    },
+    refreshToken: { // save the refresh token in the database for later validation and revocation if needed.
+      type: String,
     },
   },
   {

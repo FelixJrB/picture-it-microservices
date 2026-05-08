@@ -8,3 +8,4 @@ const controller = new authController()
 // Routes for user registration and login
 router.post('/register', (req, res, next) => controller.register(req, res, next))
 router.post('/login', (req, res, next) => controller.login(req, res, next))
+router.post('/refresh', (req, res, next) => controller.refreshToken(req, res, next))

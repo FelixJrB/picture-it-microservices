@@ -10,3 +10,7 @@ export const PRIVATE_KEY = fs.readFileSync(
   'utf8'
 )
 
+export const PUBLIC_KEY = fs.readFileSync(
+  path.join(currentDir, '../keys/public.pem'),
+  'utf8'
+)
