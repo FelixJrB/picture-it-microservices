@@ -1,54 +1,86 @@
-# Assignment B3 - Picture It
+# Picture It — Microservices
 
-In this assignment, you will create a system consisting of three microservices: the Auth service, the Resource service, and the Image service. The Auth service will handle user authentication and provide JWTs to be used as bearer tokens for accessing the Resource service. The Resource service will handle images (called "resources") in a restful manner, storing image metadata and requesting the Image service to store the actual images. The Image service is already deployed and responsible for storing all images used by the application.
+A back-end system of loosely coupled **microservices** for managing images via a REST API with JWT-based access control.
 
-The system will have a single entry point from the consumer's perspective but will consist of multiple back-end services. You can use Postman or Curl to test the endpoints. No client application needs to be developed.
+Built for **Assignment B3 (Picture It)** in the course *1DV026 — Web Programming* at Linnaeus University. The **Auth service** and the **Resource service** were implemented from scratch; the **Image service** was provided already deployed.
 
-Here is an overview of the system architecture:
+A client can register, authenticate, and manage images ("resources") in a RESTful way, using JWTs as bearer tokens for access control. There is a single entry point from the consumer's perspective, while the back end consists of multiple independent services. The endpoints can be tested with Postman or curl — no client application is required.
+
+## Architecture
 
 ![Overall overview of the architecture](.readme/overall_architecture.png)
 
-_The image service is already deployed._
+_The Image service is provided already deployed; the Auth and Resource services are implemented in this repository._
 
-Here is a flowchart illustrating the process for handling image requests:
+The flow for handling image requests:
 
 ![Flow chart of the application](.readme/flow_chart.png)
 
-0. The client tries to contact the Resource service but gets a 403 response.
-1. The client registers an account and logs in to the system, receiving a JWT upon successful login.
-2. Using the JWT as a Bearer token, the client can add, update, and delete resources in the system.
-3. When the client makes a create, update, or delete request, the Resource service will request the Image service to add, delete, or update the corresponding image. The Resource service stores the resource metadata and responds to the client with the created document.
-4. The client can request the image from the URL provided by the Resource service.
+0. The client tries to contact the Resource service but gets a `403` response.
+1. The client registers an account and logs in, receiving a JWT upon successful login.
+2. Using the JWT as a Bearer token, the client can add, update, and delete resources.
+3. On a create, update, or delete request, the Resource service calls the Image service to add, delete, or update the corresponding image. The Resource service stores the resource metadata and responds with the created document.
+4. The client can fetch the image from the URL provided by the Resource service.
 
-## Auth service
+## Repository structure
 
-The Auth service is responsible for authenticating users and handing out JWTs upon login. The JWTs handed out by the Auth service should be trusted and validated by the Resource service to use account information stored in the JWT without contacting the Auth service.
+```
+picture-it-microservices/
+├── auth-service/          # Authentication & JWT issuing
+├── resource-service/      # Image resource management
+├── assignment-routes.json # Deployed endpoints for the running services
+└── README.md
+```
 
-For more information about the Auth service, see [Auth Service](../../../../auth-service) and issue #10.
+> This is a monorepo. Each service was originally developed in its own repository and was merged in here with its full commit history preserved.
 
-## Resource service
+## Services
 
-The Resource service is responsible for handling the resources in the overall application, including image URLs, descriptions, and titles. However, the actual images will be stored by the Image service, not the Resource service.
+### Auth service ([`auth-service/`](./auth-service))
 
-For more information about the Resource service, see [Resource Service](../../../../resource-service) and issue #11.
+Handles user accounts and issues JWTs on successful authentication. The tokens are signed with **RS256** (asymmetric keys) so that the Resource service can validate them locally — using the account information embedded in the token — without contacting the Auth service on every request.
 
-## Image service (existing)
+- **Stack:** Node.js, Express 5, Mongoose/MongoDB, `jsonwebtoken`, `bcrypt`
+- See [`auth-service/README.md`](./auth-service/README.md) for setup, including how to generate the RS256 key pair.
 
-The Image service is already deployed and responsible for storing all images used by the application. It can be accessed at <https://courselab.lnu.se/picture-it/images/api/v1/>. Its documentation, available at <https://courselab.lnu.se/picture-it/images/api/v1/docs/>, provides more information about how to communicate with the service. Some important points to note:
+### Resource service ([`resource-service/`](./resource-service))
 
-- Image data must be sent as a Base64 encoded string.
-- The service communicates using an Access token, which you can find in your "Secrets" project.
-- The service has a public interface for serving images, and only the image URL needs to be stored in the Resource service.
-- The payload size for requests to the server must not exceed 500kb. This means that only small images can be handled.
+A RESTful API that manages the resources in the system (image URLs, titles, descriptions). The actual image bytes are stored by the Image service; the Resource service stores only metadata and the resulting image URL, and orchestrates calls to the Image service on create/update/delete.
 
-## This Project (Picture It)
+- **Stack:** Node.js, Express 5, Mongoose/MongoDB, `jsonwebtoken`
+- See [`resource-service/README.md`](./resource-service/README.md) for setup and notes (e.g. the 500 kB payload limit and running a separate MongoDB instance per service).
 
-In this project, you will find the [`assignment-routes.json`](./assignment-routes.json) file, which needs to be completed with references to the endpoints of the application. You will need to edit two different entries: your server address (in two separate places) and your student username (in two separate locations).
+### Image service (external, provided)
 
-No code needs to be written to this repository, but you can use it to save test data and files for other necessary tools. When you complete the assignment, make a merge request to submit your work on this project. Do not make merge requests on any other project!
+Already deployed and responsible for storing all images. It is **not** part of this repository. Documentation: <https://courselab.lnu.se/picture-it/images/api/v1/docs/>. Key points:
 
-## Requirements
+- Image data is sent as a Base64-encoded string.
+- Authentication uses an access token.
+- It exposes a public interface for serving images; only the image URL is stored in the Resource service.
+- Requests must not exceed 500 kB, so only small images can be handled.
 
-Make sure to read [all requirements of the application](../../issues/), including issues #1, #2, #3, #4, #5, #6, #7, #8, #9, #10, and #11. Pay extra attention to the labels indicating whether a requirement is required (~"req::required") or optional (~"req::optional").
+## Running locally
 
-You are required to close any issues and tasks ([ ]) that you implement. If you add any functionality, you must also create and close these issues.
+Each service is a standalone Node.js application. In each service folder:
+
+```bash
+npm install
+npm run dev      # development (nodemon)
+# or
+npm start        # production
+```
+
+Both services require their own environment configuration (e.g. MongoDB connection string, JWT keys/secrets) via a `.env` file, and each is intended to run against its **own** MongoDB instance to keep the services loosely coupled and independently deployable. See each service's README for details.
+
+## Tech stack
+
+- **Runtime:** Node.js
+- **Framework:** Express 5
+- **Database:** MongoDB via Mongoose
+- **Auth:** JSON Web Tokens (RS256), `bcrypt` for password hashing
+- **Architecture:** REST, microservices
+
+## Notes
+
+- The deployed endpoints for the running services are listed in [`assignment-routes.json`](./assignment-routes.json).
+- The original assignment instructions and issues were tracked in the course's GitLab.
